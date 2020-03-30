@@ -57,7 +57,7 @@ func AllNotes(c *gin.Context) {
 	return
 }
 
-func GetNote(c *gin.Context) {
+func GetNote(c *gin.Context) { //TODO input validation
 	noteID := c.Param("id")
 
 	docID, _ := primitive.ObjectIDFromHex(noteID)
@@ -89,17 +89,27 @@ func CreateNote(c *gin.Context) {
 
 	title := note.Title
 	content := note.Content
+	user, err := models.ExtractTokenMeta(c.Request)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"status":  http.StatusUnauthorized,
+			"message": "An error occurred",
+		})
+		return
+	}
 
 	newNote := Notes{
 		Title:     title,
 		Content:   content,
+		User:      user.UserEmail,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 
-	_, err := notesCollection.InsertOne(context.TODO(), newNote)
+	_, errIn := notesCollection.InsertOne(context.TODO(), newNote)
 
-	if err != nil {
+	if errIn != nil {
 		log.Printf("Error on inserting new note, %v \n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
