@@ -31,7 +31,9 @@ func SignUp(c *gin.Context) {
 
 	c.BindJSON(&user)
 
-	v := validator.New() // TODO fuente: https://medium.com/@apzuk3/input-validation-in-golang-bc24cdec1835
+	v := validator.New() // fuente: https://medium.com/@apzuk3/input-validation-in-golang-bc24cdec1835
+
+	// FIXME email : - Single email register
 
 	if err := v.Struct(user); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
@@ -46,10 +48,16 @@ func SignUp(c *gin.Context) {
 		Password: pass,
 	}
 
-	_, err := usersCollection.InsertOne(context.TODO(), newUser)
+	token, errT := models.CreateJWT(email)
 
-	if err != nil {
-		log.Printf("Error creating new user, %v \n", err)
+	if errT != nil {
+		c.JSON(http.StatusUnprocessableEntity, errT.Error())
+		return
+	}
+	_, errIn := usersCollection.InsertOne(context.TODO(), newUser)
+
+	if errIn != nil {
+		log.Printf("Error creating new user, %v \n", errIn)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "An error occurred",
@@ -60,12 +68,13 @@ func SignUp(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{
 		"status":  http.StatusCreated,
 		"message": "Successfully registered! ",
+		"token":   token,
 	})
 	return
 }
 
-// TODO login fuente: https://www.nexmo.com/blog/2020/03/13/using-jwt-for-authentication-in-a-golang-application-dr
-func Login(c *gin.Context) {
+// login fuente: https://www.nexmo.com/blog/2020/03/13/using-jwt-for-authentication-in-a-golang-application-dr
+func Login(c *gin.Context) { //TODO check if user uses a token
 
 	var user Users
 	c.BindJSON(&user)
@@ -94,3 +103,5 @@ func Login(c *gin.Context) {
 	})
 	return
 }
+
+// TODO logout
