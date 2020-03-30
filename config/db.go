@@ -34,6 +34,7 @@ func Connect() {
 	// Use database, name = "go-notes-api"
 	db := client.Database("go-notes-api")
 	controllers.NotesCollection(db)
+	controllers.UsersCollection(db)
 
 	return
 }
