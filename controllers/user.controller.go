@@ -2,13 +2,13 @@ package controllers
 
 import (
 	"context"
+	"github.com/AloisCRR/jwt-api-notes/models"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
-	"projects/mongodb-notes-api/models"
 )
 
 type Users models.Users
@@ -97,9 +97,17 @@ func Login(c *gin.Context) { //TODO check if user uses a token
 		return
 	}
 
+	token, errT := models.CreateJWT(user.Email)
+
+	if errT != nil {
+		c.JSON(http.StatusUnprocessableEntity, errT.Error())
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"message": "Login completed!",
+		"token": token,
 	})
 	return
 }

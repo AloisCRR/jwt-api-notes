@@ -1,10 +1,10 @@
 package routes
 
 import (
+	"github.com/AloisCRR/jwt-api-notes/controllers"
+	"github.com/AloisCRR/jwt-api-notes/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"projects/mongodb-notes-api/controllers"
-	"projects/mongodb-notes-api/models"
 )
 
 func home(c *gin.Context) {

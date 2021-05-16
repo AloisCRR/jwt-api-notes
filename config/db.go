@@ -2,11 +2,11 @@ package config
 
 import (
 	"context"
+	"github.com/AloisCRR/jwt-api-notes/controllers"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
-	"projects/mongodb-notes-api/controllers"
 	"time"
 )
 

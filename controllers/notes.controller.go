@@ -2,13 +2,13 @@ package controllers
 
 import (
 	"context"
+	"github.com/AloisCRR/jwt-api-notes/models"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"net/http"
-	"projects/mongodb-notes-api/models"
 	"time"
 )
 

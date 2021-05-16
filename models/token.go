@@ -2,10 +2,10 @@ package models
 
 import (
 	"fmt"
+	"github.com/AloisCRR/jwt-api-notes/helpers"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"projects/mongodb-notes-api/helpers"
 	"strings"
 	"time"
 )
@@ -83,7 +83,9 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		err := TokenValidation(c.Request)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, "Token error")
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"error": "Token error",
+			})
 			c.Abort()
 			return
 		}
